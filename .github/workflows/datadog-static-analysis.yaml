@@ -1,0 +1,33 @@
+on: [push]
+
+jobs:
+  check-quality:
+    runs-on: ubuntu-latest
+    name: Datadog Static Analyzer
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Check code meets quality standards
+        id: datadog-static-analysis
+        uses: DataDog/datadog-static-analyzer-github-action@v1.0.0
+        with:
+          dd_app_key: ${{ secrets.DD_APP_KEY }}
+          dd_api_key: ${{ secrets.DD_API_KEY }}
+          dd_service: "product-microservice"
+          dd_env: "github"
+          dd_site: ${{ secrets.DD_SITE }}
+
+  datadog-gate:
+    needs: check-quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install node
+        uses: actions/setup-node@v3
+      - run: yarn global add @datadog/datadog-ci
+      - run: >
+          DD_BETA_COMMANDS_ENABLED=true 
+          DATADOG_API_KEY=${{ secrets.DD_API_KEY }}
+          DATADOG_APP_KEY=${{ secrets.DD_APP_KEY }} 
+          DATADOG_SITE=${{ secrets.DD_SITE }}
+          datadog-ci gate evaluate
