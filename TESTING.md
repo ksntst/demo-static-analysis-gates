@@ -1,23 +1,25 @@
 1. Checkout the code
 2. Make it work according to the instructions in `README.md`
-3. Go to http://127.0.0.1:5000/product/list?limit=20&offset=10 and check it returns products
-4. Now, we want to avoid doing the filtering in memory. To do so, in the file `database.py`, change the function with the following content
+3. Go to http://127.0.0.1:5000/products and check it returns products
+4. Now, we want to add a feature to retrieve a product based on its ID. To do so, in the file `service.py`, add a new endpoint:
 
 ```python
-def get_products(db_connection, limit, offset):
-    productFromDatabase = []
-    cursor = db_connection.cursor();
-    res = cursor.execute(f"SELECT id, title from products LIMIT {limit} OFFSET {offset}");
-    for v in res:
-        productFromDatabase.append(Product(v[0], v[1]))
-
-    return productFromDatabase
+@app.route("/products/<product_id>", methods=["GET"])
+def product_list_by_id(product_id):
+    products = db.get_product_by_id(db_connection, product_id)
+    return jsonify(products)
  ```
 
-The objective is to not only filter the products in memory but ask
-the database layer to do it.
+And add a new function in the file `database.py`
 
-This will create a SQL issue (without a fix) and a BEST_PRACTICES/CODE_STYLE issue (with a fix).
+```python
+def get_product_by_id(db_connection, product_id):
+    cursor = db_connection.cursor()
+    res = cursor.execute(f"SELECT id, title from products WHERE id={product_id}")
+    return [Product(v[0], v[1]) for v in res]
+ ```
+
+This will create a SQL issue, without a fix.
 
 
 ```json
@@ -38,40 +40,6 @@ This will create a SQL issue (without a fix) and a BEST_PRACTICES/CODE_STYLE iss
       "filename": "database.py",
       "rule": "python-security/sql-injection",
       "fixes": []
-    },
-    {
-      "start": {
-        "line": 10,
-        "col": 5
-      },
-      "end": {
-        "line": 10,
-        "col": 24
-      },
-      "message": "use snake_case and not camelCase",
-      "severity": "UNKNOWN",
-      "category": "BEST_PRACTICES",
-      "filename": "database.py",
-      "rule": "python-code-style/assignment-names",
-      "fixes": [
-        {
-          "description": "product_from_database instead of productFromDatabase",
-          "edits": [
-            {
-              "start": {
-                "line": 10,
-                "col": 5
-              },
-              "end": {
-                "line": 10,
-                "col": 24
-              },
-              "edit_type": "UPDATE",
-              "content": "product_from_database"
-            }
-          ]
-        }
-      ]
     }
   ],
   "rule_results_with_error": []
