@@ -5,7 +5,7 @@
 
 ```python
 @app.route("/products/<product_id>", methods=["GET"])
-def product_list_by_id(product_id):
+def product_by_id(product_id):
     products = db.get_product_by_id(db_connection, product_id)
     return jsonify(products)
  ```
