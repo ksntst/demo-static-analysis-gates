@@ -15,7 +15,7 @@ jobs:
           dd_api_key: ${{ secrets.DD_API_KEY }}
           dd_service: "product-microservice"
           dd_env: "github"
-          dd_site: "datadohq.com"
+          dd_site: "datadoghq.com"
 
   datadog-gate:
     needs: check-quality
