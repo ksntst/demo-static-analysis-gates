@@ -1,4 +1,4 @@
-1. Checkout the code
+1. Checkout the code2
 2. Make it work according to the instructions in `README.md`
 3. Go to http://127.0.0.1:5000/products and check it returns products
 4. Now, we want to add a feature to retrieve a product based on its ID. To do so, in the file `service.py`, add a new endpoint:
