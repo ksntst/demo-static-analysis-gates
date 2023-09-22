@@ -32,7 +32,7 @@ jobs:
       - run: yarn global add @datadog/datadog-ci
       - run: >
           DD_BETA_COMMANDS_ENABLED=true
-          DATADOG_API_KEY=${{ secrets.DD_API_KEY }}
-          DATADOG_APP_KEY=${{ secrets.DD_APP_KEY }}
-          DATADOG_SITE="datadoghq.com"
+          DD_API_KEY=${{ secrets.DD_API_KEY }}
+          DD_APP_KEY=${{ secrets.DD_APP_KEY }}
+          DD_SITE="datadoghq.com"
           datadog-ci gate evaluate
