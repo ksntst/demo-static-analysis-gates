@@ -15,5 +15,5 @@ def product_list():
 
 def print_product_list():
     products = db.get_products(db_connection)
-    for i in products:
-        print(i.name)
+    for i in range(len(products)):
+        print(products[i].name)
